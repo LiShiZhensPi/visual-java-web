@@ -3,7 +3,7 @@
     <codemirror class="input" v-model="code" :options="cmOptions"> </codemirror>
     <div class="select-button">
       <el-select
-        class="select"
+        id="select"
         v-model="value"
         placeholder="选择示例"
         @change="changeCode"
@@ -17,7 +17,8 @@
         </el-option>
       </el-select>
       <div class="button">
-        <el-button class="button" @click="submit"> Run </el-button>
+        <el-button id="jvm_run" icon="el-icon-caret-right" @click="submit">
+        </el-button>
       </div>
     </div>
   </div>
@@ -40,6 +41,29 @@
 .button {
   margin-left: 10px;
 }
+
+#select:focus {
+  color: black;
+  border-color: black;
+  background-color: white;
+}
+
+#select:hover {
+  color: black;
+  border-color: black;
+  background-color: white;
+}
+
+#jvm_run:focus {
+  color: black;
+  border-color: black;
+  background-color: white;
+}
+#jvm_run:hover {
+  color: black;
+  border-color: black;
+  background-color: white;
+}
 </style>
 
 <script>
@@ -57,7 +81,7 @@ export default {
   },
   data() {
     return {
-      code:"//Write your java code here",
+      code: "//Write your java code here",
       cmOptions: {
         mode: "text/x-java", //Java语言
         theme: "idea", // 默认主题
@@ -73,17 +97,24 @@ export default {
         {
           value: "TestFor",
         },
+        {
+          value: "TestObj",
+        },
       ],
+      value: "",
     };
   },
   methods: {
     changeCode(value) {
       const templates = {
-        TestAdd: `class TestAdd{
+        TestAdd: `public class TestAdd {
     public static void main(String[] args) {
         int a = 1;
         int b = 2;
-        int c = a+b;
+        int c = a + b;
+        float f1 = 1;
+        float f2 = 2;
+        float f3 = f1 + f2;
     }
 }`,
         TestFor: `public class Testfor {
@@ -93,6 +124,23 @@ export default {
             sum+=i;
     }
 }`,
+        TestObj: `class TestObj {
+  int add(int a, int b) {
+    return a + b;
+  }
+
+  int del(int a, int b) {
+    return a - b;
+  }
+
+  public static void main(String[] args) {
+    int a = 1;
+    int b = 2;
+    TestObj obj = new TestObj();
+    int c = obj.add(a, b);
+    int d = obj.del(a, b);
+  }
+}`,
       };
       this.$data.code = templates[value];
     },
@@ -101,16 +149,22 @@ export default {
       axios
         .post("http://localhost:8081/upload", {
           code: this.$data.code,
-          name: "Test",
         })
         .then((response) => {
           console.log(response.data);
-          if (response.data.code == 0) {
-            this.$router.replace("/jvm")
+          if (response.data.code === 0) {
+            window.sessionStorage.setItem(
+              "jvminfos",
+              JSON.stringify(response.data.data)
+            );
+            this.$router.push("/jvm");
+          } else {
+            this.$message(response.data.msg);
           }
         })
         .catch((error) => {
           console.log(error);
+          this.$message("network error");
         });
     },
   },
