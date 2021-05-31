@@ -100,8 +100,10 @@ export default {
         {
           value: "TestObj",
         },
+        {
+          value: "TestFeb",
+        },
       ],
-      value: "",
     };
   },
   methods: {
@@ -139,6 +141,18 @@ export default {
     TestObj obj = new TestObj();
     int c = obj.add(a, b);
     int d = obj.del(a, b);
+  }
+}`,
+        TestFeb: `public class TestFeb {
+  static int f(int n) {
+    if (n == 1 | n == 2)
+      return 1;
+    else
+      return f(n - 1) + f(n - 2);
+  }
+
+  public static void main(String[] args) {
+    int s = f(6);
   }
 }`,
       };
