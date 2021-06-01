@@ -5,7 +5,8 @@ const fs = require("fs");
 const exec = require("child_process");
 
 function parseResult(result) {
-  var lines = result.split("\r\n");
+  // var lines = result.split("\r\n");//windows
+  var lines = result.split("\n");//linux
   var jvm_infos = [];
 
   if (lines[0] != "jvm inited success") throw "can'find jvm inited success";
@@ -198,7 +199,7 @@ app.post("/upload", (req, res) => {
   }
 
   const cmd2 =
-    "D:\\Code\\Visual-Java\\build\\gava.exe -cp D:\\code\\visual-java-server\\get_files " +
+    "./gava -cp get_files " +
     className;
   try {
     console.log("execing cmd: " + cmd2);
