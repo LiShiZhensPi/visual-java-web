@@ -26,3 +26,8 @@ npm server.js
 ```
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+效果图
+
+![img](visual-java.png)
+![img](visual-java2.png)
